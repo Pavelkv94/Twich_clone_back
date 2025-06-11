@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_epic_stream
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - epic_stream_network
+
+  redis:
+    image: redis:latest
+    container_name: redis_epic_stream
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - epic_stream_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  epic_stream_network:
