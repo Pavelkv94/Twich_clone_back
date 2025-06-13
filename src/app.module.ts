@@ -2,10 +2,12 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { CoreModule } from './core/core.module';
 import { AccountModule } from './modules/auth/account/account.module';
 import { SessionModule } from './modules/auth/session/session.module';
-import { CoreEnvConfig } from './core/config/core-env.config';
+import { CoreEnvConfig } from './core/core-env.config';
+import { VerificationModule } from './modules/auth/verification/verification.module';
+import { PassRecoveryModule } from './modules/auth/pass-recovery/pass-recovery.module';
 
 @Module({
-  imports: [CoreModule, AccountModule, SessionModule],
+  imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule],
   controllers: [],
   providers: [],
 })
@@ -16,7 +18,7 @@ export class AppModule {
   static forRoot(config: CoreEnvConfig): DynamicModule {
     return {
       module: AppModule,
-      imports: [CoreModule, AccountModule, SessionModule],
+      imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule],
     };
   }
 }

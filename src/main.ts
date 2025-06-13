@@ -3,9 +3,9 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import session from 'express-session';
-import { RedisService } from './core/redis/redis.service';
+import { RedisService } from './core/modules/redis/redis.service';
 import { RedisStore } from 'connect-redis';
-import { CoreEnvConfig } from './core/config/core-env.config';
+import { CoreEnvConfig } from './core/core-env.config';
 import { initAppModule } from './init-app';
 
 async function bootstrap() {

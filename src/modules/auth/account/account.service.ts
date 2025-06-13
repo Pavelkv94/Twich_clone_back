@@ -1,17 +1,25 @@
-import { PrismaService } from '@/src/core/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserInput } from './inputs/create-user.input';
 import { BcryptService } from '../../../shared/bcrypt.service';
+import { VerificationService } from '../verification/verification.service';
 
 @Injectable()
 export class AccountService {
-    constructor(private readonly prismaService: PrismaService, private readonly bcryptService: BcryptService) { }
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly bcryptService: BcryptService,
+        private readonly verificationService: VerificationService
+    ) { }
 
-    async findAll() {
-        const users = await this.prismaService.user.findMany();
+    async getMe(id: string) {
+        const user = await this.prismaService.user.findUnique({ where: { id } });
 
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
 
-        return users;
+        return user;
     }
 
     async create(input: CreateUserInput) {
@@ -37,6 +45,8 @@ export class AccountService {
                 displayName: username,
             },
         });
+
+        await this.verificationService.sendVerificationEmail(email, user.id);
 
         return user;
     }

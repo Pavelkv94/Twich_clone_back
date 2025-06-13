@@ -1,7 +1,9 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { SessionModel } from "../../session/models/session.model";
+import { User } from "@prisma/generated";
 
 @ObjectType()
-export class UserModel {
+export class UserModel implements User {
     @Field(() => ID)
     id: string;
 
@@ -18,14 +20,23 @@ export class UserModel {
     displayName: string;
 
     @Field(() => String, { nullable: true })
-    avatar?: string;
+    avatar: string | null;
 
     @Field(() => String, { nullable: true })
-    bio?: string;
+    bio: string | null;
 
     @Field(() => Date)
     createdAt: Date;
 
     @Field(() => Date)
     updatedAt: Date;
+
+    @Field(() => Boolean)
+    isVerified: boolean;
+
+    @Field(() => Boolean)
+    isEmailVerified: boolean;
+
+    @Field(() => [SessionModel], { nullable: true })
+    sessions?: SessionModel[] | null;
 }

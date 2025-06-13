@@ -13,19 +13,64 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type DeviceModel {
+  browser: String!
+  ip: String!
+  os: String!
+  type: String!
+  userAgent: String!
+}
+
+type LocationModel {
+  city: String!
+  country: String!
+  latitude: Float!
+  longitude: Float!
+}
+
 input LoginInput {
   login: String!
   password: String!
 }
 
 type Mutation {
+  clearCookies: String!
   createAccount(input: CreateUserInput!): UserModel!
-  login(input: LoginInput!): String!
+  login(input: LoginInput!): UserModel!
   logout: String!
+  removeSessionById(id: String!): String!
+  resetPassword(input: ResetPassInput!): Boolean!
+  setNewPassword(input: NewPasswordInput!): Boolean!
+  verifyAccount(input: VerificationInput!): UserModel!
+}
+
+input NewPasswordInput {
+  confirmPassword: String!
+  password: String!
+  token: String!
 }
 
 type Query {
-  findAllAccounts: [UserModel!]!
+  findCurrentSession: SessionModel!
+  findSessionsByUserId: [SessionModel!]!
+  getMe: UserModel!
+}
+
+input ResetPassInput {
+  email: String!
+}
+
+type SessionMetadataModel {
+  device: DeviceModel!
+  ip: String!
+  location: LocationModel!
+}
+
+type SessionModel {
+  createdAt: String!
+  id: ID!
+  metadata: SessionMetadataModel!
+  userId: String!
 }
 
 type UserModel {
@@ -35,7 +80,14 @@ type UserModel {
   displayName: String!
   email: String!
   id: ID!
+  isEmailVerified: Boolean!
+  isVerified: Boolean!
   password: String!
+  sessions: [SessionModel!]
   updatedAt: DateTime!
   username: String!
+}
+
+input VerificationInput {
+  token: String!
 }
