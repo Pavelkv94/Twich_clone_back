@@ -1,34 +1,56 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import path from 'path';
+import fs from 'fs';
 
-type MailPurposeType = 'activationAcc' | 'passwordRecovery';
+export enum MailPurpose {
+    ACTIVATION = 'activationAcc',
+    PASSWORD_RECOVERY = 'passwordRecovery',
+    DEACTIVATE_ACCOUNT = 'deactivateAccount',
+    DELETE_ACCOUNT = 'deleteAccount',
+}
 
 @Injectable()
 export class EmailService {
     constructor(private mailerService: MailerService) { }
 
-    async sendConfirmationEmail(email: string, code: string, purpose: MailPurposeType): Promise<void> {
-        const isActivation = purpose === 'activationAcc';
+    async sendConfirmationEmail(email: string, code: string, purpose: MailPurpose): Promise<void> {
+        const template = {
+            name: '',
+            subject: '',
+        }
+        switch (purpose) {
+            case MailPurpose.ACTIVATION:
+                template.name = 'activation';
+                template.subject = 'Account activation!';
+                break;
+            case MailPurpose.PASSWORD_RECOVERY:
+                template.name = 'passwordRecovery';
+                template.subject = 'Password Recovery!';
+                break;
+            case MailPurpose.DEACTIVATE_ACCOUNT:
+                template.name = 'deactivateAccount';
+                template.subject = 'Deactivate Account!';
+                break;
+            case MailPurpose.DELETE_ACCOUNT:
+                template.name = 'deleteAccount';
+                template.subject = 'Delete Account!';
+                break;
+        }
 
-        const subject = isActivation ? 'Account activation!' : 'Recovery Password!';
-        const htmlText = isActivation
-            ? `
-        <h1>Thank for your registration</h1>
-        <p>To finish registration please follow the link below:
-            <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
-        </p>
-        `
-            : `
-        <h1>Password recovery</h1>
-        <p>To finish password recovery please follow the link below:
-            <a href='https://somesite.com/password-recovery?recoveryCode=${code}'>recovery password</a>
-        </p>
-        `;
+
+        let htmlTemplate = await this.loadTemplate(template.name);
+        htmlTemplate = htmlTemplate.replace('$code', code);
 
         await this.mailerService.sendMail({
             to: email,
-            subject: subject,
-            html: htmlText,
+            subject: template.subject,
+            html: htmlTemplate,
         });
+    }
+
+    private async loadTemplate(templateName: string): Promise<string> {
+        const templatePath = path.join(__dirname, 'templates', `${templateName}.html`);
+        return fs.promises.readFile(templatePath, 'utf8');
     }
 }

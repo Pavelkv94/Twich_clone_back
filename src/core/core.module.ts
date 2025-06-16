@@ -1,11 +1,11 @@
 import { configModule } from './modules/config/config.module';
 import { GraphqlConfiguredModule } from './modules/graphql/grapgql.module';
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { RedisModule } from './modules/redis/redis.module';
 import { CoreEnvConfig } from './core-env.config';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-
+import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
   imports: [
@@ -13,7 +13,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     GraphqlConfiguredModule,
     PrismaModule,
     RedisModule,
-    NotificationsModule
+    NotificationsModule,
+    StorageModule
   ],
   controllers: [],
   providers: [CoreEnvConfig],

@@ -3,6 +3,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserInput } from './inputs/create-user.input';
 import { BcryptService } from '../../../shared/bcrypt.service';
 import { VerificationService } from '../verification/verification.service';
+import { ChangeEmailInput } from './inputs/change-email.input';
+import { User } from '@/prisma/generated/client';
+import { ChangePassInput } from './inputs/change-pass.input';
 
 @Injectable()
 export class AccountService {
@@ -49,6 +52,40 @@ export class AccountService {
         await this.verificationService.sendVerificationEmail(email, user.id);
 
         return user;
+    }
+
+    async changeEmail(input: ChangeEmailInput, user: User) {
+        const { email } = input;
+
+        const isEmailExists = await this.prismaService.user.findUnique({ where: { email } });
+
+        if (isEmailExists) {
+            throw new Error('Email already exists');
+        }
+
+        await this.prismaService.user.update({
+            where: { id: user.id },
+            data: { email }
+        })
+        return true;
+    }
+
+    async changePass(input: ChangePassInput, user: User) {
+        const { password, newPassword } = input;
+
+        const isValidPassword = await this.bcryptService.checkPassword(password, user.password);
+
+        if (!isValidPassword) {
+            throw new Error('Invalid password');
+        }
+
+        const newHashedPassword = await this.bcryptService.generateHash(newPassword);
+
+        await this.prismaService.user.update({
+            where: { id: user.id },
+            data: { password: newHashedPassword }
+        })
+        return true;
     }
 
 }

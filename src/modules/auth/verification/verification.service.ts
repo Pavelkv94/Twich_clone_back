@@ -1,5 +1,5 @@
 import { TokenType } from '@/prisma/generated/client';
-import { EmailService } from '@/src/core/modules/notifications/email.service';
+import { EmailService, MailPurpose } from '@/src/core/modules/notifications/email.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Session } from 'express-session';
 import { SessionService } from '../session/session.service';
@@ -49,7 +49,7 @@ export class VerificationService {
 
     async sendVerificationEmail(email: string, userId: string) {
         const verificationToken = await this.tokenService.generateToken(userId, TokenType.EMAIL_VERIFICATION, true);
-        await this.emailService.sendConfirmationEmail(email, verificationToken.token, 'activationAcc');
+        await this.emailService.sendConfirmationEmail(email, verificationToken.token, MailPurpose.ACTIVATION);
     }
 
 }

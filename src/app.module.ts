@@ -5,9 +5,12 @@ import { SessionModule } from './modules/auth/session/session.module';
 import { CoreEnvConfig } from './core/core-env.config';
 import { VerificationModule } from './modules/auth/verification/verification.module';
 import { PassRecoveryModule } from './modules/auth/pass-recovery/pass-recovery.module';
+import { TotpModule } from './modules/auth/totp/totp.module';
+import { DeactivateModule } from './modules/auth/deactivate/deactivate.module';
+import { CronModule } from './modules/cron/cron.module';
 
 @Module({
-  imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule],
+  imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule, TotpModule, DeactivateModule, CronModule],
   controllers: [],
   providers: [],
 })
@@ -18,7 +21,7 @@ export class AppModule {
   static forRoot(config: CoreEnvConfig): DynamicModule {
     return {
       module: AppModule,
-      imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule],
+      imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule, TotpModule, DeactivateModule, CronModule],
     };
   }
 }

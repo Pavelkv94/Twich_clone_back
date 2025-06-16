@@ -6,6 +6,7 @@ import { UserModel } from '../account/models/user.model';
 import { Session } from 'express-session';
 import { RedisService } from '@/src/core/modules/redis/redis.service';
 import { SessionConfig } from './session.config';
+import { TotpService } from '../totp/totp.service';
 
 @Injectable()
 export class SessionService {
@@ -14,6 +15,7 @@ export class SessionService {
         private readonly bcryptService: BcryptService,
         private readonly redisService: RedisService,
         private readonly sessionConfig: SessionConfig,
+        private readonly totpService: TotpService,
     ) { }
 
     async findByUserId(userId: any): Promise<any[]> {
@@ -41,7 +43,7 @@ export class SessionService {
     }
 
     async login(input: LoginInput): Promise<UserModel> {
-        const { login, password } = input;
+        const { login, password, totpPin } = input;
 
         const user = await this.prismaService.user.findFirst({ where: { OR: [{ email: login }, { username: login }] } });
 
@@ -59,6 +61,19 @@ export class SessionService {
             throw new BadRequestException('Email not verified');
         }
 
+        if (user.isTotpEnabled) {
+            if (!totpPin) {
+                throw new BadRequestException('TOTP code is required');
+            }
+
+            const isValidTotp = await this.totpService.validateTotp(user, user.totpSecret!, totpPin);
+
+            if (!isValidTotp) {
+                throw new BadRequestException('Invalid TOTP code');
+            }
+
+        }
+
         return user
     }
 
@@ -66,7 +81,7 @@ export class SessionService {
         await this.destroySession(session);
     }
 
-    async removeSessionById(id: string, userId: string) {
+    async removeSessionById(id: string, userId: string): Promise<void> {
         const sessionKey = `${this.sessionConfig.sessionPrefix}${id}`;
         const session = await this.redisService.get(sessionKey);
         const sessionData: any = JSON.parse(session || '{}');
@@ -76,7 +91,7 @@ export class SessionService {
         await this.redisService.del(sessionKey);
     }
 
-    async saveSession(session: any, metadata: any, userId: string) {
+    async saveSession(session: any, metadata: any, userId: string): Promise<void> {
         session.userId = userId;
         session.createdAt = new Date();
         session.metadata = metadata;
@@ -91,7 +106,7 @@ export class SessionService {
         });
     }
 
-    async destroySession(session: Session) {
+    async destroySession(session: Session): Promise<void> {
         await new Promise<void>((resolve, reject) => {
             session.destroy((err) => {
                 if (err) {

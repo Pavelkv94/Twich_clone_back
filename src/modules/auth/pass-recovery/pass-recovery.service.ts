@@ -1,4 +1,4 @@
-import { EmailService } from '@/src/core/modules/notifications/email.service';
+import { EmailService, MailPurpose } from '@/src/core/modules/notifications/email.service';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ResetPassInput } from './inputs/reset-pass.input';
@@ -21,14 +21,14 @@ export class PassRecoveryService {
 
         const resetToken = await this.tokenService.generateToken(user.id, TokenType.PASSWORD_RESET, true);
 
-        await this.emailService.sendConfirmationEmail(email, resetToken.token, 'passwordRecovery');
+        await this.emailService.sendConfirmationEmail(email, resetToken.token, MailPurpose.PASSWORD_RECOVERY);
 
         return true
     }
 
     async sendPasswordRecoveryEmail(email: string, userId: string) {
         const verificationToken = await this.tokenService.generateToken(userId, TokenType.PASSWORD_RESET, true);
-        await this.emailService.sendConfirmationEmail(email, verificationToken.token, 'passwordRecovery');
+        await this.emailService.sendConfirmationEmail(email, verificationToken.token, MailPurpose.PASSWORD_RECOVERY);
     }
 
     async setNewPassword(input: NewPasswordInput) {
