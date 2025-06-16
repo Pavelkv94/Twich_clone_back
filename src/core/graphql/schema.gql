@@ -11,6 +11,12 @@ input ChangePassInput {
   password: String!
 }
 
+input ChangeProfileInput {
+  bio: String!
+  displayName: String!
+  username: String!
+}
+
 input CreateUserInput {
   email: String!
   password: String!
@@ -57,16 +63,21 @@ input LoginInput {
 type Mutation {
   changeEmail(input: ChangeEmailInput!): Boolean!
   changePass(input: ChangePassInput!): Boolean!
+  changeProfile(input: ChangeProfileInput!): Boolean!
   clearCookies: String!
   createAccount(input: CreateUserInput!): UserModel!
+  createSocialLink(input: SocialLinkInput!): Boolean!
   deactivateAccount(input: DeactivateAccountInput!): Boolean!
+  deleteSocialLink(id: String!): Boolean!
   disableTotp: Boolean!
   enableTotp(input: EnableTotpInput!): Boolean!
   login(input: LoginInput!): UserModel!
   logout: String!
   removeSessionById(id: String!): String!
+  reorderSocialLinks(list: [SocialLinkOrderInput!]!): Boolean!
   resetPassword(input: ResetPassInput!): Boolean!
   setNewPassword(input: NewPasswordInput!): Boolean!
+  updateSocialLink(input: SocialLinkInput!): Boolean!
   verifyAccount(input: VerificationInput!): UserModel!
 }
 
@@ -81,6 +92,7 @@ type Query {
   findSessionsByUserId: [SessionModel!]!
   generateTotpSecret: TotpModel!
   getMe: UserModel!
+  socialLinks: [SocialLinkModel!]!
 }
 
 input ResetPassInput {
@@ -98,6 +110,26 @@ type SessionModel {
   id: ID!
   metadata: SessionMetadataModel!
   userId: String!
+}
+
+input SocialLinkInput {
+  title: String!
+  url: String!
+}
+
+type SocialLinkModel {
+  createdAt: DateTime!
+  id: ID!
+  position: Float!
+  title: String!
+  updatedAt: DateTime!
+  url: String!
+  userId: String!
+}
+
+input SocialLinkOrderInput {
+  id: String!
+  position: Float!
 }
 
 type TotpModel {
@@ -119,6 +151,7 @@ type UserModel {
   isVerified: Boolean!
   password: String!
   sessions: [SessionModel!]
+  socialLinks: [SocialLinkModel!]
   totpSecret: String
   updatedAt: DateTime!
   username: String!

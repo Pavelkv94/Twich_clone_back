@@ -8,9 +8,10 @@ import { PassRecoveryModule } from './modules/auth/pass-recovery/pass-recovery.m
 import { TotpModule } from './modules/auth/totp/totp.module';
 import { DeactivateModule } from './modules/auth/deactivate/deactivate.module';
 import { CronModule } from './modules/cron/cron.module';
+import { ProfileModule } from './modules/auth/profile/profile.module';
 
 @Module({
-  imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule, TotpModule, DeactivateModule, CronModule],
+  imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule, TotpModule, DeactivateModule, CronModule, ProfileModule],
   controllers: [],
   providers: [],
 })

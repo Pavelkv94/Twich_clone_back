@@ -16,7 +16,7 @@ export class AccountService {
     ) { }
 
     async getMe(id: string) {
-        const user = await this.prismaService.user.findUnique({ where: { id } });
+        const user = await this.prismaService.user.findUnique({ where: { id }, include: { socialLinks: true } });
 
         if (!user) {
             throw new NotFoundException('User not found');

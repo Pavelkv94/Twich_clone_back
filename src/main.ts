@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import session from 'express-session';
 import { RedisService } from './core/modules/redis/redis.service';
