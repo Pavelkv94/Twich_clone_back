@@ -36,13 +36,6 @@ export class VerificationService {
             }
         })
 
-        await this.prismaService.token.delete({
-            where: {
-                id: existingToken.id,
-                type: TokenType.EMAIL_VERIFICATION
-            }
-        })
-
         await this.sessionService.saveSession(session, metadata, user.id);
         return true;
     }

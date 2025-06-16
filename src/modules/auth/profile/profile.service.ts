@@ -2,7 +2,6 @@ import { User } from '@/prisma/generated/client';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
 import { StorageService } from '@/src/core/modules/storage/storage.service';
 import { Injectable } from '@nestjs/common';
-import Upload from 'graphql-upload/Upload.js';
 import sharp from 'sharp';
 import { ChangeProfileInput } from './inputs/change-profile.input';
 import { SocialLinkInput, SocialLinkOrderInput } from './inputs/social-link.input';
@@ -12,35 +11,35 @@ import { SocialLinkModel } from './models/social-link.model';
 export class ProfileService {
     constructor(private readonly storageService: StorageService, private readonly prismaService: PrismaService) { }
 
-    async changeAvatar(user: User, file: Upload) {
-        if (user.avatar) {
-            await this.storageService.deleteFile(user.avatar);
-        }
+    // async changeAvatar(user: User, file: Upload) {
+    //     if (user.avatar) {
+    //         await this.storageService.deleteFile(user.avatar);
+    //     }
 
-        const chunks: Buffer[] = [];
-        for await (const chunk of file.createReadStream()) {
-            chunks.push(chunk);
-        }
+    //     const chunks: Buffer[] = [];
+    //     for await (const chunk of file.createReadStream()) {
+    //         chunks.push(chunk);
+    //     }
 
-        const buffer = Buffer.concat(chunks);
+    //     const buffer = Buffer.concat(chunks);
 
-        const filename = `/channels/${user.id}.webp`;
+    //     const filename = `/channels/${user.id}.webp`;
 
-        if (file.filename && file.mimetype.endsWith('gif')) {
-            const image = await sharp(buffer, { animated: true }).resize(512, 512).webp().toBuffer();
-            await this.storageService.uploadFile(image, filename, 'image/webp');
-        } else {
-            const image = await sharp(buffer, { animated: true }).resize(512, 512).webp().toBuffer();
-            await this.storageService.uploadFile(image, filename, 'image/webp');
-        }
+    //     if (file.filename && file.mimetype.endsWith('gif')) {
+    //         const image = await sharp(buffer, { animated: true }).resize(512, 512).webp().toBuffer();
+    //         await this.storageService.uploadFile(image, filename, 'image/webp');
+    //     } else {
+    //         const image = await sharp(buffer, { animated: true }).resize(512, 512).webp().toBuffer();
+    //         await this.storageService.uploadFile(image, filename, 'image/webp');
+    //     }
 
-        await this.prismaService.user.update({
-            where: { id: user.id },
-            data: { avatar: filename },
-        });
+    //     await this.prismaService.user.update({
+    //         where: { id: user.id },
+    //         data: { avatar: filename },
+    //     });
 
-        return true;
-    }
+    //     return true;
+    // }
 
     async removeAvatar(user: User) {
         if (!user.avatar) {

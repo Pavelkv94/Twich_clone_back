@@ -6,6 +6,8 @@ import { RedisModule } from './modules/redis/redis.module';
 import { CoreEnvConfig } from './core-env.config';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { LivekitModule } from './modules/livekit/livekit.module';
+import { LivekitConfig } from './modules/livekit/livekit.config';
 
 @Module({
   imports: [
@@ -14,7 +16,15 @@ import { StorageModule } from './modules/storage/storage.module';
     PrismaModule,
     RedisModule,
     NotificationsModule,
-    StorageModule
+    StorageModule,
+    LivekitModule.forRootAsync({
+      useFactory: (livekitConfig: LivekitConfig) => ({
+        apiUrl: livekitConfig.livekitUrl,
+        apiKey: livekitConfig.livekitApiKey,
+        apiSecret: livekitConfig.livekitApiSecret,
+      }),
+      inject: [LivekitConfig],
+    }),
   ],
   controllers: [],
   providers: [CoreEnvConfig],

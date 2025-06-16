@@ -46,6 +46,11 @@ export class AccountService {
                 email,
                 password: await this.bcryptService.generateHash(password),
                 displayName: username,
+                stream: {
+                    create: {
+                        title: `Stream of ${username}`,
+                    }
+                }
             },
         });
 

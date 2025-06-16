@@ -9,9 +9,24 @@ import { TotpModule } from './modules/auth/totp/totp.module';
 import { DeactivateModule } from './modules/auth/deactivate/deactivate.module';
 import { CronModule } from './modules/cron/cron.module';
 import { ProfileModule } from './modules/auth/profile/profile.module';
+import { StreamModule } from './modules/stream/stream.module';
+import { LivekitModule } from './core/modules/livekit/livekit.module';
 
 @Module({
-  imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule, TotpModule, DeactivateModule, CronModule, ProfileModule],
+  imports: [
+    CoreModule,
+    AccountModule,
+    SessionModule,
+    VerificationModule,
+    PassRecoveryModule,
+    TotpModule,
+    DeactivateModule,
+    CronModule,
+    ProfileModule,
+    StreamModule,
+
+
+  ],
   controllers: [],
   providers: [],
 })

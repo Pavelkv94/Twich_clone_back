@@ -1,0 +1,149 @@
+import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { FiltersInput } from './inputs/filters.input';
+import { Prisma, User } from '@prisma/generated';
+import { ChangeStreamInfoInput } from './inputs/change-stream-info.input';
+// import Upload from 'graphql-upload/Upload.js'; //todo change to REST
+import sharp from 'sharp';
+import { StorageService } from '@/src/core/modules/storage/storage.service';
+
+@Injectable()
+export class StreamService {
+    constructor(private readonly prismaService: PrismaService, private readonly storageService: StorageService) { }
+
+    async findAll(filters: FiltersInput = {}) {
+        const { take = 12, skip = 0, searchTerm } = filters;
+
+        const whereClause: Prisma.StreamWhereInput = searchTerm ? this.findBySearchTerm(searchTerm) : {};
+
+        const streams = await this.prismaService.stream.findMany({
+            take,
+            skip,
+            where: {
+                user: {
+                    isDeactivated: false,
+                },
+                ...whereClause,
+            },
+            include: {
+                user: true
+            }
+        });
+
+        return streams;
+    }
+
+    async findRandomStreams(count: number = 4) {
+        const total = await this.prismaService.stream.count({
+            where: {
+                user: {
+                    isDeactivated: false,
+                },
+            },
+        });
+
+        const randomIndex = new Set<number>();
+        while (randomIndex.size < count) {
+            randomIndex.add(Math.floor(Math.random() * total));
+        }
+
+        const streams = await this.prismaService.stream.findMany({
+            take: count,
+            skip: 0,
+            include: {
+                user: true,
+            },
+        });
+
+        return Array.from(randomIndex).map(index => streams[index]);
+    }
+
+
+
+    async changeStreamInfo(user: User, input: ChangeStreamInfoInput) {
+        const { title, categoryId } = input;
+
+        await this.prismaService.stream.update({
+            where: { userId: user.id },
+            data: {
+                title,
+            },
+        });
+
+        return true;
+    }
+
+    // async changeThumbnail(user: User, file: Upload) {
+    //     const stream = await this.findStreamByUserId(user.id);
+
+    //     if (!stream) {
+    //         throw new NotFoundException('Stream not found');
+    //     }
+
+    //     if (stream.thumbnailUrl) {
+    //         await this.storageService.deleteFile(stream.thumbnailUrl);
+    //     }
+
+    //     const chunks: Buffer[] = [];
+    //     for await (const chunk of file.createReadStream()) {
+    //         chunks.push(chunk);
+    //     }
+
+    //     const buffer = Buffer.concat(chunks);
+
+    //     const filename = `/streams/${stream.id}.webp`;
+
+    //     if (file.filename && file.mimetype.endsWith('gif')) {
+    //         const image = await sharp(buffer, { animated: true }).resize(1280, 720).webp().toBuffer();
+    //         await this.storageService.uploadFile(image, filename, 'image/webp');
+    //     } else {
+    //         const image = await sharp(buffer, { animated: true }).resize(1280, 720).webp().toBuffer();
+    //         await this.storageService.uploadFile(image, filename, 'image/webp');
+    //     }
+
+    //     await this.prismaService.stream.update({
+    //         where: { userId: user.id },
+    //         data: { thumbnailUrl: filename },
+    //     });
+
+    //     return true;
+    // }
+
+    async removeThumbnail(user: User) {
+        const stream = await this.findStreamByUserId(user.id);
+
+        if (!stream) {
+            throw new NotFoundException('Stream not found');
+        }
+
+        if (!stream.thumbnailUrl) {
+            return false;
+        }
+
+        await this.storageService.deleteFile(stream.thumbnailUrl);
+
+        await this.prismaService.stream.update({
+            where: { userId: user.id },
+            data: { thumbnailUrl: null },
+        });
+
+        return true;
+    }
+
+
+    private findBySearchTerm(searchTerm: string): Prisma.StreamWhereInput {
+        return {
+            OR: [
+                { title: { contains: searchTerm, mode: 'insensitive' } },
+                { user: { username: { contains: searchTerm, mode: 'insensitive' } } },
+            ],
+        };
+    }
+
+    private async findStreamByUserId(userId: string) {
+        return this.prismaService.stream.findUnique({
+            where: { userId },
+        });
+    }
+
+}
