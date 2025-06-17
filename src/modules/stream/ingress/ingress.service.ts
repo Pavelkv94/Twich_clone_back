@@ -3,6 +3,7 @@ import { LivekitService } from '@/src/core/modules/livekit/livekit.service';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateIngressOptions, IngressAudioEncodingPreset, IngressInput, IngressVideoEncodingPreset } from 'livekit-server-sdk';
+import { TrackSource } from 'livekit-server-sdk/dist/proto/livekit_models';
 
 @Injectable()
 export class IngressService {
@@ -15,18 +16,18 @@ export class IngressService {
             name: user.username,
             roomName: user.id,
             participantName: user.username,
-            participantIdentity: user.id,
+            participantIdentity: user.id
         };
 
         if (ingressType === IngressInput.WHIP_INPUT) {
             options.bypassTranscoding = true;
         } else {
             options.video = {
-                source: 1,
+                source: TrackSource.CAMERA,
                 preset: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS,
             };
             options.audio = {
-                source: 1,
+                source: TrackSource.MICROPHONE,
                 preset: IngressAudioEncodingPreset.OPUS_STEREO_96KBPS,
             };
         }
