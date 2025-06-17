@@ -13,6 +13,9 @@ import { StreamModule } from './modules/stream/stream.module';
 import { LivekitModule } from './core/modules/livekit/livekit.module';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { CategoryModule } from './modules/category/category.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { FollowModule } from './modules/follow/follow.module';
+import { ChannelModule } from './modules/channel/channel.module';
 
 @Module({
   imports: [
@@ -28,6 +31,9 @@ import { CategoryModule } from './modules/category/category.module';
     StreamModule,
     WebhookModule,
     CategoryModule,
+    ChatModule,
+    FollowModule,
+    ChannelModule,
 
 
   ],

@@ -43,4 +43,13 @@ export class StreamModel implements Stream {
 
     @Field(() => Date)
     updatedAt: Date;
+
+    @Field(() => Boolean)
+    isChatEnabled: boolean;
+
+    @Field(() => Boolean)
+    isChatFollowersOnly: boolean;
+
+    @Field(() => Boolean)
+    isChatPremiumFollowersOnly: boolean;
 }

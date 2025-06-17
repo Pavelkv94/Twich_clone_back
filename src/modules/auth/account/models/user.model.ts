@@ -3,6 +3,7 @@ import { SessionModel } from "../../session/models/session.model";
 import { User } from "@prisma/generated";
 import { SocialLinkModel } from "../../profile/models/social-link.model";
 import { StreamModel } from "@/src/modules/stream/models/stream.model";
+import { FollowModel } from "@/src/modules/follow/models/follow.model";
 
 @ObjectType()
 export class UserModel implements User {
@@ -59,4 +60,10 @@ export class UserModel implements User {
 
     @Field(() => StreamModel, { nullable: true })
     stream?: StreamModel | null;
+
+    @Field(() => [FollowModel], { nullable: true })
+    followings?: FollowModel[] | null;
+
+    @Field(() => [FollowModel], { nullable: true })
+    followers?: FollowModel[] | null;
 }

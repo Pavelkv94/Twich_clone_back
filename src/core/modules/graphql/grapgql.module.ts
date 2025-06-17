@@ -17,6 +17,7 @@ import { GraphqlConfig } from "./graphql.config";
                 autoSchemaFile: join(process.cwd(), 'src/core/graphql/schema.gql'),
                 sortSchema: true,
                 context: ({ req, res }) => ({ req, res }),
+                installSubscriptionHandlers: true,
             }),
             inject: [GraphqlConfig],
         })
