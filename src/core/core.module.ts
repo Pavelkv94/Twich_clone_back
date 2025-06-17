@@ -1,4 +1,4 @@
-import { configModule } from './modules/config/config.module';
+import { configModule } from './modules/env-config/env-config.module';
 import { GraphqlConfiguredModule } from './modules/graphql/grapgql.module';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from './modules/prisma/prisma.module';

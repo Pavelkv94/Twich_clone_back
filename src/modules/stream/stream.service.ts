@@ -6,10 +6,17 @@ import { ChangeStreamInfoInput } from './inputs/change-stream-info.input';
 // import Upload from 'graphql-upload/Upload.js'; //todo change to REST
 import sharp from 'sharp';
 import { StorageService } from '@/src/core/modules/storage/storage.service';
+import { StreamTokenInput } from './inputs/stream-token.input';
+import { StreamConfig } from './stream.config';
+import { AccessToken } from 'livekit-server-sdk';
 
 @Injectable()
 export class StreamService {
-    constructor(private readonly prismaService: PrismaService, private readonly storageService: StorageService) { }
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly storageService: StorageService,
+        private readonly streamConfig: StreamConfig
+    ) { }
 
     async findAll(filters: FiltersInput = {}) {
         const { take = 12, skip = 0, searchTerm } = filters;
@@ -26,7 +33,8 @@ export class StreamService {
                 ...whereClause,
             },
             include: {
-                user: true
+                user: true,
+                category: true,
             }
         });
 
@@ -52,6 +60,7 @@ export class StreamService {
             skip: 0,
             include: {
                 user: true,
+                category: true,
             },
         });
 
@@ -67,6 +76,11 @@ export class StreamService {
             where: { userId: user.id },
             data: {
                 title,
+                category: {
+                    connect: {
+                        id: categoryId,
+                    }
+                }
             },
         });
 
@@ -129,6 +143,48 @@ export class StreamService {
 
         return true;
     }
+
+
+    async generateStreamToken(input: StreamTokenInput) {
+        const { userId, channelId } = input;
+
+        let self: { userId: string, username: string };
+
+        const user = await this.prismaService.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (user) {
+            self = { userId: user.id, username: user.username };
+        } else {
+            self = { userId: userId, username: "John Doe " + Math.random().toString(36).substring(2, 15) };
+        }
+
+        const channel = await this.prismaService.user.findUnique({
+            where: { id: channelId },
+        });
+
+        if (!channel) {
+            throw new NotFoundException('Channel not found');
+        }
+
+        const isHost = channel.id === userId;
+
+        const token = new AccessToken(this.streamConfig.livekitApiKey, this.streamConfig.livekitApiSecret, {
+            identity: isHost ? `Host-${self.userId}` : self.userId.toString(),
+            name: self.username
+        });
+
+        token.addGrant({
+            room: channel.id,
+            roomJoin: true,
+            canPublish: true,
+            canSubscribe: true,
+        });
+
+        return { token: token.toJwt() };
+    }
+
 
 
     private findBySearchTerm(searchTerm: string): Prisma.StreamWhereInput {

@@ -11,6 +11,8 @@ import { CronModule } from './modules/cron/cron.module';
 import { ProfileModule } from './modules/auth/profile/profile.module';
 import { StreamModule } from './modules/stream/stream.module';
 import { LivekitModule } from './core/modules/livekit/livekit.module';
+import { WebhookModule } from './modules/webhook/webhook.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { LivekitModule } from './core/modules/livekit/livekit.module';
     CronModule,
     ProfileModule,
     StreamModule,
+    WebhookModule,
+    CategoryModule,
 
 
   ],

@@ -7,6 +7,8 @@ import { GqlAuthGuard } from '@/src/shared/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { ExtractUserFromRequest } from '@/src/shared/decorators/params/extract-user-from-req.decorator';
 import { User } from '@/prisma/generated';
+import { TokenModel } from './models/token.model';
+import { StreamTokenInput } from './inputs/stream-token.input';
 
 @Resolver('Stream')
 export class StreamResolver {
@@ -38,5 +40,10 @@ export class StreamResolver {
   @UseGuards(GqlAuthGuard)
   async removeStreamThumbnail(@ExtractUserFromRequest() user: User) {
     return this.streamService.removeThumbnail(user);
+  }
+
+  @Mutation(() => TokenModel, { name: 'generateStreamToken' })
+  async generateStreamToken(@Args('input') input: StreamTokenInput) {
+    return this.streamService.generateStreamToken(input);
   }
 }
