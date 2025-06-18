@@ -5,15 +5,21 @@ import { ResetPassInput } from './inputs/reset-pass.input';
 import { TokenType } from '@/prisma/generated';
 import { TokenService } from '@/src/shared/token.service';
 import { NewPasswordInput } from './inputs/new-password.input';
+import { TelegramService } from '../../telegram/telegram.service';
 
 @Injectable()
 export class PassRecoveryService {
-    constructor(private readonly prismaService: PrismaService, private readonly emailService: EmailService, private readonly tokenService: TokenService) { }
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly emailService: EmailService,
+        private readonly tokenService: TokenService,
+        private readonly telegramService: TelegramService
+    ) { }
 
     async resetPassword(input: ResetPassInput, metadata: any) {
         const { email } = input;
 
-        const user = await this.prismaService.user.findUnique({ where: { email } });
+        const user = await this.prismaService.user.findUnique({ where: { email }, include: { notificationSettings: true } });
 
         if (!user) {
             throw new NotFoundException('User not found');
@@ -22,6 +28,10 @@ export class PassRecoveryService {
         const resetToken = await this.tokenService.generateToken(user.id, TokenType.PASSWORD_RESET, true);
 
         await this.emailService.sendConfirmationEmail(email, resetToken.token, MailPurpose.PASSWORD_RECOVERY);
+
+        if (resetToken.user.notificationSettings?.telegramNotification) {
+            await this.telegramService.sendPasswordResetToken(user.id, resetToken.token);
+        }
 
         return true
     }

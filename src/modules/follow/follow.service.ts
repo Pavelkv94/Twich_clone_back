@@ -1,10 +1,16 @@
 import { User } from '@/prisma/generated';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { NotificationService } from '../notification/notification.service';
+import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
 export class FollowService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly notificationService: NotificationService,
+        private readonly telegramService: TelegramService
+    ) { }
 
     async findMyFollowers(user: User) {
         const followers = await this.prisma.follow.findMany({
@@ -63,12 +69,27 @@ export class FollowService {
             throw new BadRequestException('You already follow this channel');
         }
 
-        await this.prisma.follow.create({
+        const follow = await this.prisma.follow.create({
             data: {
                 followerId: user.id,
                 followingId: channel.id,
             },
+            include: {
+                follower: true,
+                following: {
+                    include: {
+                        notificationSettings: true,
+                    }
+                },
+            }
         });
+
+        if (follow.following.notificationSettings?.siteNotification) {
+            await this.notificationService.createNotificationNewFollower(follow.following.id, follow.follower);
+        }
+        if (follow.following.notificationSettings?.telegramNotification && follow.follower.telegramId) {
+            await this.telegramService.sendNewFollower(follow.follower.telegramId, follow.follower);
+        }
 
         return true;
     }

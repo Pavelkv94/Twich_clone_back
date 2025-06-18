@@ -53,13 +53,15 @@
     "i18n-iso-countries": "^7.14.0",
     "ioredis": "^5.6.1",
     "livekit-server-sdk": "1.2.7",
+    "nestjs-telegraf": "^2.9.1",
     "otpauth": "^9.4.0",
     "prisma": "^6.9.0",
     "qrcode": "^1.5.4",
     "raw-body": "^3.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "sharp": "^0.34.2"
+    "sharp": "^0.34.2",
+    "telegraf": "^4.16.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

@@ -2,7 +2,7 @@ import { configValidationUtility } from '@/src/shared/utils/env-validation.utili
 import { ms, StringValue } from '@/src/shared/utils/ms.util';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export enum Environments {
     DEVELOPMENT = 'development',

@@ -11,12 +11,15 @@ datasource db {
 model User {
   id String @id @default(uuid())
 
-  email           String  @unique
-  password        String
-  username        String  @unique
-  displayName     String  @map("display_name")
-  avatar          String?
-  bio             String?
+  email       String  @unique
+  password    String
+  username    String  @unique
+  displayName String  @map("display_name")
+  avatar      String?
+  bio         String?
+
+  telegramId String? @unique @map("telegram_id")
+
   isVerified      Boolean @default(false) @map("is_verified")
   isEmailVerified Boolean @default(false) @map("is_email_verified")
 
@@ -26,12 +29,14 @@ model User {
   isDeactivated Boolean   @default(false) @map("is_deactivated")
   deactivatedAt DateTime? @map("deactivated_at")
 
-  tokens       Token[]
-  socialLinks  SocialLink[]
-  stream       Stream?
-  chatMessages ChatMessage[]
-  followers    Follow[] @relation(name: "followers")
-  followings    Follow[] @relation(name: "followings")
+  tokens               Token[]
+  socialLinks          SocialLink[]
+  stream               Stream?
+  chatMessages         ChatMessage[]
+  followers            Follow[]              @relation(name: "followers")
+  followings           Follow[]              @relation(name: "followings")
+  notifications        Notification[]
+  notificationSettings NotificationSettings?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -59,6 +64,7 @@ enum TokenType {
   EMAIL_VERIFICATION
   PASSWORD_RESET
   DEACTIVATE_ACCOUNT
+  TELEGRAM_AUTH
 
   @@map("token_types")
 }
@@ -90,9 +96,9 @@ model Stream {
   streamKey String? @map("stream_key")
 
   isLive Boolean @default(false) @map("is_live")
-  
-  isChatEnabled Boolean @default(false) @map("is_chat_enabled")
-  isChatFollowersOnly Boolean @default(false) @map("is_chat_followers_only")
+
+  isChatEnabled              Boolean @default(false) @map("is_chat_enabled")
+  isChatFollowersOnly        Boolean @default(false) @map("is_chat_followers_only")
   isChatPremiumFollowersOnly Boolean @default(false) @map("is_chat_premium_followers_only")
 
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -158,4 +164,45 @@ model Follow {
   @@index([followerId])
   @@index([followingId])
   @@map("follows")
+}
+
+model Notification {
+  id String @id @default(uuid())
+
+  message String           @map("message")
+  type    NotificationType @map("type")
+  isRead  Boolean          @default(false) @map("is_read")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  STREAM_STARTED
+  NEW_FOLLOWER
+  NEW_SPONSORSHIP
+  ENABLE_TWO_FACTOR_AUTH
+  VERIFIED_CHANNEL
+
+  @@map("notification_types")
+}
+
+model NotificationSettings {
+  id String @id @default(uuid())
+
+  siteNotification     Boolean @default(true) @map("site_notification")
+  telegramNotification Boolean @default(true) @map("telegram_notification")
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String? @unique @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("notification_settings")
 }

@@ -8,6 +8,7 @@ import { EmailService, MailPurpose } from '@/src/core/modules/notifications/emai
 import { DeactivateAccountInput } from './inputs/deactivate-account.input';
 import { BcryptService } from '@/src/shared/bcrypt.service';
 import { TotpService } from '../totp/totp.service';
+import { TelegramService } from '../../telegram/telegram.service';
 
 @Injectable()
 export class DeactivateService {
@@ -18,7 +19,8 @@ export class DeactivateService {
     private readonly sessionService: SessionService,
     private readonly emailService: EmailService,
     private readonly bcryptService: BcryptService,
-    private readonly totpService: TotpService
+    private readonly totpService: TotpService,
+    private readonly telegramService: TelegramService
   ) { }
 
 
@@ -48,6 +50,10 @@ export class DeactivateService {
   async sendDeactivateAccountEmail(email: string, userId: string) {
     const deactivateToken = await this.tokenService.generateToken(userId, TokenType.DEACTIVATE_ACCOUNT);
     await this.emailService.sendConfirmationEmail(email, deactivateToken.token, MailPurpose.DEACTIVATE_ACCOUNT);
+
+    if (deactivateToken.user.notificationSettings?.telegramNotification) {
+      await this.telegramService.sendDeactivateToken(deactivateToken.user.id, deactivateToken.token);
+    }
   }
 
   async deactivateAccount(input: DeactivateAccountInput, user: User, session: Session): Promise<boolean> {

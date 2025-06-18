@@ -10,12 +10,13 @@ import { DeactivateModule } from './modules/auth/deactivate/deactivate.module';
 import { CronModule } from './modules/cron/cron.module';
 import { ProfileModule } from './modules/auth/profile/profile.module';
 import { StreamModule } from './modules/stream/stream.module';
-import { LivekitModule } from './core/modules/livekit/livekit.module';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { CategoryModule } from './modules/category/category.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { FollowModule } from './modules/follow/follow.module';
 import { ChannelModule } from './modules/channel/channel.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { TelegramModule } from './modules/telegram/telegram.module';
 
 @Module({
   imports: [
@@ -34,6 +35,9 @@ import { ChannelModule } from './modules/channel/channel.module';
     ChatModule,
     FollowModule,
     ChannelModule,
+    NotificationModule,
+    TelegramModule,
+
 
 
   ],
@@ -47,7 +51,25 @@ export class AppModule {
   static forRoot(config: CoreEnvConfig): DynamicModule {
     return {
       module: AppModule,
-      imports: [CoreModule, AccountModule, SessionModule, VerificationModule, PassRecoveryModule, TotpModule, DeactivateModule, CronModule],
+      imports: [
+        CoreModule,
+        AccountModule,
+        SessionModule,
+        VerificationModule,
+        PassRecoveryModule,
+        TotpModule,
+        DeactivateModule,
+        CronModule,
+        ProfileModule,
+        StreamModule,
+        WebhookModule,
+        CategoryModule,
+        ChatModule,
+        FollowModule,
+        ChannelModule,
+        NotificationModule,
+        TelegramModule,
+      ],
     };
   }
 }

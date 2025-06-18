@@ -47,7 +47,11 @@ export class TokenService {
                 }
             },
             include: {
-                user: true
+                user: {
+                    include: {
+                        notificationSettings: true
+                    }
+                }
             }
         })
 

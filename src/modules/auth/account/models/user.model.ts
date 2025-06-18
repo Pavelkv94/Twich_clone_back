@@ -4,6 +4,8 @@ import { User } from "@prisma/generated";
 import { SocialLinkModel } from "../../profile/models/social-link.model";
 import { StreamModel } from "@/src/modules/stream/models/stream.model";
 import { FollowModel } from "@/src/modules/follow/models/follow.model";
+import { NotificationSettingsModel } from "@/src/modules/notification/models/notification-settings.model";
+import { NotificationModel } from "@/src/modules/notification/models/notification.model";
 
 @ObjectType()
 export class UserModel implements User {
@@ -66,4 +68,13 @@ export class UserModel implements User {
 
     @Field(() => [FollowModel], { nullable: true })
     followers?: FollowModel[] | null;
+
+    @Field(() => String, { nullable: true })
+    telegramId: string | null;
+
+    @Field(() => NotificationSettingsModel, { nullable: true })
+    notificationSettings?: NotificationSettingsModel | null;
+
+    @Field(() => [NotificationModel], { nullable: true })
+    notifications?: NotificationModel[] | null;
 }

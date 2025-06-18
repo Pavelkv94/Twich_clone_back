@@ -7,9 +7,10 @@ import { SessionService } from '../session/session.service';
 import { BcryptService } from '@/src/shared/bcrypt.service';
 import { TotpService } from '../totp/totp.service';
 import { SessionModule } from '../session/session.module';
+import { TelegramService } from '../../telegram/telegram.service';
 
 @Module({
   imports: [SessionModule],
-  providers: [DeactivateResolver, DeactivateService, EmailService, TokenService, BcryptService, TotpService],
+  providers: [DeactivateResolver, DeactivateService, EmailService, TokenService, BcryptService, TotpService, TelegramService],
 })
 export class DeactivateModule { }
