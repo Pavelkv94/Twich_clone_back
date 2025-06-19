@@ -8,6 +8,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { StorageModule } from './modules/storage/storage.module';
 import { LivekitModule } from './modules/livekit/livekit.module';
 import { LivekitConfig } from './modules/livekit/livekit.config';
+import { StripeModule } from './modules/stripe/stripe.module';
+import { StripeConfig } from './modules/stripe/stripe.config';
 
 @Module({
   imports: [
@@ -24,6 +26,15 @@ import { LivekitConfig } from './modules/livekit/livekit.config';
         apiSecret: livekitConfig.livekitApiSecret,
       }),
       inject: [LivekitConfig],
+    }),
+    StripeModule.forRootAsync({
+      useFactory: (stripeConfig: StripeConfig) => ({
+        apiKey: stripeConfig.stripeApiKey,
+        config: {
+          apiVersion: '2025-05-28.basil',
+        },
+      }),
+      inject: [StripeConfig],
     }),
   ],
   controllers: [],

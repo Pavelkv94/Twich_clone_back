@@ -5,11 +5,14 @@ import { RawBodyMiddleware } from '@/src/shared/middlewares/raw-body.middleware'
 import { NotificationService } from '../notification/notification.service';
 import { TokenService } from '@/src/shared/token.service';
 import { TelegramService } from '../telegram/telegram.service';
+import { StripeModule } from '@/src/core/modules/stripe/stripe.module';
 
 @Module({
+  imports: [StripeModule],
   controllers: [WebhookController],
   providers: [WebhookService, NotificationService, TokenService, TelegramService],
 })
+
 export class WebhookModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RawBodyMiddleware).forRoutes({ path: 'webhook/livekit', method: RequestMethod.POST });

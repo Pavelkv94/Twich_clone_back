@@ -10,7 +10,7 @@ import { initAppModule } from './init-app';
 async function bootstrap() {
 
   const dynamicAppModule = await initAppModule();
-  const app = await NestFactory.create(dynamicAppModule);
+  const app = await NestFactory.create(dynamicAppModule, { rawBody: true });
 
   const config = app.get<CoreEnvConfig>(CoreEnvConfig);
   const redis = app.get(RedisService);

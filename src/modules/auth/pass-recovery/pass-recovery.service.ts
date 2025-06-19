@@ -27,7 +27,7 @@ export class PassRecoveryService {
 
         const resetToken = await this.tokenService.generateToken(user.id, TokenType.PASSWORD_RESET, true);
 
-        await this.emailService.sendConfirmationEmail(email, resetToken.token, MailPurpose.PASSWORD_RECOVERY);
+        await this.emailService.sendEmail(email, resetToken.token, MailPurpose.PASSWORD_RECOVERY);
 
         if (resetToken.user.notificationSettings?.telegramNotification) {
             await this.telegramService.sendPasswordResetToken(user.id, resetToken.token);
@@ -38,7 +38,7 @@ export class PassRecoveryService {
 
     async sendPasswordRecoveryEmail(email: string, userId: string) {
         const verificationToken = await this.tokenService.generateToken(userId, TokenType.PASSWORD_RESET, true);
-        await this.emailService.sendConfirmationEmail(email, verificationToken.token, MailPurpose.PASSWORD_RECOVERY);
+        await this.emailService.sendEmail(email, verificationToken.token, MailPurpose.PASSWORD_RECOVERY);
     }
 
     async setNewPassword(input: NewPasswordInput) {

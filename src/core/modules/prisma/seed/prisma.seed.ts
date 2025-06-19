@@ -1,7 +1,7 @@
 import { BadRequestException, Logger } from "@nestjs/common";
 import { Prisma, PrismaClient } from "../../../../../prisma/generated";
-import { categoriesSeedData, categoriesTopicsData } from "./categories";
-import { usernamesSeedData } from "./usernames";
+import { categoriesSeedData, categoriesTopicsData } from "./categories.data";
+import { usernamesSeedData } from "./usernames.data";
 import * as bcrypt from 'bcrypt';
 
 async function seed() {
@@ -74,6 +74,12 @@ async function seed() {
                                     ]
                                 },
                             },
+                            notificationSettings: {
+                                create: {
+                                    siteNotification: true,
+                                    telegramNotification: true,
+                                }
+                            }
                         },
                     })
 

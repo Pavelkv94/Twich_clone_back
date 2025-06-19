@@ -8,13 +8,15 @@ export enum MailPurpose {
     PASSWORD_RECOVERY = 'passwordRecovery',
     DEACTIVATE_ACCOUNT = 'deactivateAccount',
     DELETE_ACCOUNT = 'deleteAccount',
+    VERIFIED_ACCOUNT = 'verifiedAccount',
+    ENABLE_TWO_FACTOR = 'enableTwoFactor',
 }
 
 @Injectable()
 export class EmailService {
     constructor(private mailerService: MailerService) { }
 
-    async sendConfirmationEmail(email: string, code: string, purpose: MailPurpose): Promise<void> {
+    async sendEmail(email: string, code: string, purpose: MailPurpose): Promise<void> {
         const template = {
             name: '',
             subject: '',
@@ -36,6 +38,13 @@ export class EmailService {
                 template.name = 'deleteAccount';
                 template.subject = 'Delete Account!';
                 break;
+            case MailPurpose.VERIFIED_ACCOUNT:
+                template.name = 'verifiedAccount';
+                template.subject = 'Verified Account!';
+                break;
+            case MailPurpose.ENABLE_TWO_FACTOR:
+                template.name = 'enableTwoFactor';
+                template.subject = 'Enable Two-Factor Authentication!';
         }
 
 

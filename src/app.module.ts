@@ -17,6 +17,9 @@ import { FollowModule } from './modules/follow/follow.module';
 import { ChannelModule } from './modules/channel/channel.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
+import { PlanModule } from './modules/sponsorship/plan/plan.module';
+import { SubscriptionModule } from './modules/sponsorship/subscription/subscription.module';
+import { TransactionModule } from './modules/sponsorship/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -36,7 +39,10 @@ import { TelegramModule } from './modules/telegram/telegram.module';
     FollowModule,
     ChannelModule,
     NotificationModule,
-    TelegramModule,
+    // TelegramModule,
+    PlanModule,
+    SubscriptionModule,
+    TransactionModule,
 
 
 

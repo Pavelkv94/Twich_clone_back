@@ -49,7 +49,7 @@ export class DeactivateService {
 
   async sendDeactivateAccountEmail(email: string, userId: string) {
     const deactivateToken = await this.tokenService.generateToken(userId, TokenType.DEACTIVATE_ACCOUNT);
-    await this.emailService.sendConfirmationEmail(email, deactivateToken.token, MailPurpose.DEACTIVATE_ACCOUNT);
+    await this.emailService.sendEmail(email, deactivateToken.token, MailPurpose.DEACTIVATE_ACCOUNT);
 
     if (deactivateToken.user.notificationSettings?.telegramNotification) {
       await this.telegramService.sendDeactivateToken(deactivateToken.user.id, deactivateToken.token);

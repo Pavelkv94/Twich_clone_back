@@ -42,7 +42,7 @@ export class VerificationService {
 
     async sendVerificationEmail(email: string, userId: string) {
         const verificationToken = await this.tokenService.generateToken(userId, TokenType.EMAIL_VERIFICATION, true);
-        await this.emailService.sendConfirmationEmail(email, verificationToken.token, MailPurpose.ACTIVATION);
+        await this.emailService.sendEmail(email, verificationToken.token, MailPurpose.ACTIVATION);
     }
 
 }

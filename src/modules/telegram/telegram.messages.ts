@@ -1,4 +1,4 @@
-import { User } from "@/prisma/generated/client";
+import { SponsorshipPlan, User } from "@/prisma/generated/client";
 
 export const TELEGRAM_MESSAGES = {
     start: 'Welcome to the bot!',
@@ -15,4 +15,7 @@ export const TELEGRAM_MESSAGES = {
     accountDeleted: "Your account has been deleted successfully!",
     streamStart: (channel: User) => `Stream started by ${channel.email}`,
     newFollower: (follower: User) => `New follower: ${follower.email}`,
+    newSponsorship: (plan: SponsorshipPlan, sponsor: User) => `New sponsorship: ${plan.title} by ${sponsor.email}`,
+    enableTwoFactor: 'Enable two-factor authentication',
+    verifyChannel: `You channel was verified! Congratulations!`,
 }

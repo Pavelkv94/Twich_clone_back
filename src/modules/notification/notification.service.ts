@@ -1,4 +1,4 @@
-import { NotificationType, TokenType, User } from '@/prisma/generated';
+import { NotificationType, SponsorshipPlan, TokenType, User } from '@/prisma/generated';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { NotificationSettingsInput } from './inputs/notification-settings.input';
@@ -129,5 +129,51 @@ export class NotificationService {
         return notification;
     }
 
+    async createNewSponsorship(userId: string, plan: SponsorshipPlan, sponsor: User) {
+        const notification = await this.prismaService.notification.create({
+            data: {
+                message: `New sponsorship: ${plan.title} by ${sponsor.username}`,
+                type: NotificationType.NEW_SPONSORSHIP,
+                user: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            }
+        })
 
+        return notification;
+    }
+
+    async createNotificationVerifiedAccount(userId: string, channel: User) {
+        const notification = await this.prismaService.notification.create({
+            data: {
+                message: `Your account was verified! Congratulations!`,
+                type: NotificationType.VERIFIED_CHANNEL,
+                user: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            }
+        })
+
+        return notification;
+    }
+
+    async createNotificationEnableTwoFactor(userId: string) {
+        const notification = await this.prismaService.notification.create({
+            data: {
+                message: `Enable two-factor authentication`,
+                type: NotificationType.ENABLE_TWO_FACTOR_AUTH,
+                user: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            }
+        })
+
+        return notification;
+    }
 }

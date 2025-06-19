@@ -1,4 +1,3 @@
-import { User } from '@/prisma/generated';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -6,7 +5,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 export class ChannelService {
     constructor(private readonly prismaService: PrismaService) { }
 
-    async findRecommendedChannels(user: User) {
+    async findRecommendedChannels() {
         const channels = await this.prismaService.user.findMany({
             where: {
                 isDeactivated: false,
@@ -62,5 +61,33 @@ export class ChannelService {
         });
 
         return followersCount;
+    }
+
+    async findSponsorsByChannel(channelId: string) {
+        const channel = await this.prismaService.user.findUnique({
+            where: {
+                id: channelId,
+            },
+        });
+
+        if (!channel) {
+            throw new NotFoundException('Channel not found');
+        }
+
+        const sponsors = await this.prismaService.sponsorshipSubscription.findMany({
+            where: {
+                channelId: channel.id,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                plan: true,
+                user: true,
+                channel: true
+            },
+        });
+
+        return sponsors;
     }
 }

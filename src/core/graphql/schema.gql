@@ -54,6 +54,12 @@ input ChatSettingsInput {
   isChatPremiumFollowersOnly: Boolean!
 }
 
+input CreatePlanInput {
+  description: String
+  price: Float!
+  title: String!
+}
+
 input CreateUserInput {
   email: String!
   password: String!
@@ -113,6 +119,10 @@ input LoginInput {
   totpPin: String
 }
 
+type MakePaymentModel {
+  url: String!
+}
+
 type Mutation {
   changeEmail(input: ChangeEmailInput!): Boolean!
   changeNotificationSettings(input: NotificationSettingsInput!): ChangeNotificationSettingsResponse!
@@ -122,6 +132,7 @@ type Mutation {
   clearCookies: String!
   createAccount(input: CreateUserInput!): UserModel!
   createIngress(ingressType: Float!): Boolean!
+  createPlan(input: CreatePlanInput!): Boolean!
   createSocialLink(input: SocialLinkInput!): Boolean!
   deactivateAccount(input: DeactivateAccountInput!): Boolean!
   deleteSocialLink(id: String!): Boolean!
@@ -131,6 +142,8 @@ type Mutation {
   generateStreamToken(input: StreamTokenInput!): TokenModel!
   login(input: LoginInput!): UserModel!
   logout: String!
+  makePayment(planId: String!): MakePaymentModel!
+  removePlan(planId: String!): Boolean!
   removeSessionById(id: String!): String!
   removeStreamThumbnail: Boolean!
   reorderSocialLinks(list: [SocialLinkOrderInput!]!): Boolean!
@@ -184,6 +197,18 @@ enum NotificationType {
   VERIFIED_CHANNEL
 }
 
+type PlanModel {
+  channelId: String!
+  createdAt: DateTime!
+  description: String
+  id: String!
+  price: Float!
+  stripePlanId: String!
+  stripeProductId: String!
+  title: String!
+  updatedAt: DateTime!
+}
+
 type Query {
   findAllCategories: [CategoryModel!]!
   findAllStreams(filters: FiltersInput): [StreamModel!]!
@@ -194,11 +219,15 @@ type Query {
   findMessagesByStreamId(streamId: String!): [ChatMessageModel!]!
   findMyFollowers: [FollowModel!]!
   findMyFollowings: [FollowModel!]!
+  findMyPlans: [PlanModel!]!
+  findMySponsors: [SubscriptionModel!]!
+  findMyTransactions: [TransactionModel!]!
   findNotificationsByUser: [NotificationModel!]!
   findRandomCategories: [CategoryModel!]!
   findRandomStreams: [StreamModel!]!
   findRecommendedChannels: [UserModel!]!
   findSessionsByUserId: [SessionModel!]!
+  findSponsorsByChannel(channelId: String!): [SubscriptionModel!]!
   findUnreadNotificationsCount: Int!
   generateTotpSecret: TotpModel!
   getMe: UserModel!
@@ -275,6 +304,19 @@ type Subscription {
   chatMessageAdded(streamId: String!): ChatMessageModel!
 }
 
+type SubscriptionModel {
+  channel: UserModel!
+  channelId: String!
+  createdAt: DateTime!
+  expiresAt: DateTime!
+  id: String!
+  plan: PlanModel!
+  planId: String!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
+}
+
 type TokenModel {
   token: String!
 }
@@ -282,6 +324,26 @@ type TokenModel {
 type TotpModel {
   qrCode: String!
   secret: String!
+}
+
+type TransactionModel {
+  amount: Float!
+  channelId: String!
+  createdAt: DateTime!
+  currency: String!
+  id: String!
+  status: TransactionStatus!
+  stripeSubscriptionId: String!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
+}
+
+enum TransactionStatus {
+  EXPIRED
+  FAILED
+  PENDING
+  SUCCESS
 }
 
 type UserModel {

@@ -222,6 +222,39 @@ exports.Prisma.NotificationSettingsScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  currency: 'currency',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+};
+
+exports.Prisma.SponsorshipPlanScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  price: 'price',
+  stripeProductId: 'stripeProductId',
+  stripePlanId: 'stripePlanId',
+  channelId: 'channelId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SponsorshipSubscriptionScalarFieldEnum = {
+  id: 'id',
+  expiresAt: 'expiresAt',
+  userId: 'userId',
+  channelId: 'channelId',
+  planId: 'planId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -251,6 +284,13 @@ exports.NotificationType = exports.$Enums.NotificationType = {
   VERIFIED_CHANNEL: 'VERIFIED_CHANNEL'
 };
 
+exports.TransactionStatus = exports.$Enums.TransactionStatus = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Token: 'Token',
@@ -260,7 +300,10 @@ exports.Prisma.ModelName = {
   ChatMessage: 'ChatMessage',
   Follow: 'Follow',
   Notification: 'Notification',
-  NotificationSettings: 'NotificationSettings'
+  NotificationSettings: 'NotificationSettings',
+  Transaction: 'Transaction',
+  SponsorshipPlan: 'SponsorshipPlan',
+  SponsorshipSubscription: 'SponsorshipSubscription'
 };
 
 /**
