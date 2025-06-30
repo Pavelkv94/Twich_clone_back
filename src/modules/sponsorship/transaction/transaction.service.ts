@@ -8,9 +8,12 @@ export class TransactionService {
     constructor(private readonly prismaService: PrismaService, private readonly stripeService: StripeService) { }
 
     async myTransactions(user: User) {
-        const transactions = await this.prismaService.sponsorshipSubscription.findMany({
+        const transactions = await this.prismaService.transaction.findMany({
             where: {
                 userId: user.id,
+            },
+            include: {
+                user: true,
             },
         });
         return transactions;
