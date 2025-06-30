@@ -26,14 +26,21 @@ export class CategoryService {
     async findRandomCategories(count: number = 7) {
         const total = await this.prismaService.category.count();
 
-        const randomIndex = new Set<number>();
-        while (randomIndex.size < count) {
-            randomIndex.add(Math.floor(Math.random() * total));
+        if (total === 0) {
+            return [];
         }
 
-        const categories = await this.prismaService.category.findMany({
-            take: count,
-            skip: 0,
+        // Generate random indices
+        const randomIndices = new Set<number>();
+        while (randomIndices.size < count) {
+            randomIndices.add(Math.floor(Math.random() * total));
+        }
+
+        // Convert to array and sort for efficient querying
+        const sortedIndices = Array.from(randomIndices).sort((a, b) => a - b);
+
+        // Fetch all categories and then pick the random ones
+        const allCategories = await this.prismaService.category.findMany({
             include: {
                 streams: {
                     include: {
@@ -44,7 +51,8 @@ export class CategoryService {
             }
         });
 
-        return Array.from(randomIndex).map(index => categories[index]);
+        // Map the random indices to actual categories
+        return sortedIndices.map(index => allCategories[index]).filter(Boolean);
     }
 
     async findBySlug(slug: string) {

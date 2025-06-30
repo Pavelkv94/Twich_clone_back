@@ -50,24 +50,35 @@ export class StreamService {
             },
         });
 
-        const randomIndex = new Set<number>();
-        while (randomIndex.size < count) {
-            randomIndex.add(Math.floor(Math.random() * total));
+        if (total === 0) {
+            return [];
         }
 
-        const streams = await this.prismaService.stream.findMany({
-            take: count,
-            skip: 0,
+        // Generate random indices
+        const randomIndices = new Set<number>();
+        while (randomIndices.size < count) {
+            randomIndices.add(Math.floor(Math.random() * total));
+        }
+
+        // Convert to array and sort for efficient querying
+        const sortedIndices = Array.from(randomIndices).sort((a, b) => a - b);
+
+        // Fetch all streams and then pick the random ones
+        const allStreams = await this.prismaService.stream.findMany({
+            where: {
+                user: {
+                    isDeactivated: false,
+                },
+            },
             include: {
                 user: true,
                 category: true,
             },
         });
 
-        return Array.from(randomIndex).map(index => streams[index]);
+        // Map the random indices to actual streams
+        return sortedIndices.map(index => allStreams[index]).filter(Boolean);
     }
-
-
 
     async changeStreamInfo(user: User, input: ChangeStreamInfoInput) {
         const { title, categoryId } = input;
@@ -144,7 +155,6 @@ export class StreamService {
         return true;
     }
 
-
     async generateStreamToken(input: StreamTokenInput) {
         const { userId, channelId } = input;
 
@@ -185,8 +195,6 @@ export class StreamService {
         return { token: token.toJwt() };
     }
 
-
-
     private findBySearchTerm(searchTerm: string): Prisma.StreamWhereInput {
         return {
             OR: [
@@ -201,5 +209,4 @@ export class StreamService {
             where: { userId },
         });
     }
-
 }
