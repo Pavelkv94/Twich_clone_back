@@ -45,7 +45,14 @@ export class SessionService {
     async login(input: LoginInput): Promise<UserModel> {
         const { login, password, totpPin } = input;
 
-        const user = await this.prismaService.user.findFirst({ where: { OR: [{ email: login }, { username: login }] } });
+        const user = await this.prismaService.user.findFirst({
+            where: {
+                OR: [
+                    { email: login },
+                    { username: login }
+                ]
+            }
+        });
 
         if (!user) {
             throw new NotFoundException('User not found');

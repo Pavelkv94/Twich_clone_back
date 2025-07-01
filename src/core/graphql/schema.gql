@@ -366,6 +366,8 @@ type UserModel {
   password: String!
   sessions: [SessionModel!]
   socialLinks: [SocialLinkModel!]
+  sponsorshipPlans: [PlanModel!]
+  sponsorshipSubscriptions: [SubscriptionModel!]
   stream: StreamModel
   telegramId: String
   totpSecret: String

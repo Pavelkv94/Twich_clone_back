@@ -6,6 +6,8 @@ import { StreamModel } from "@/src/modules/stream/models/stream.model";
 import { FollowModel } from "@/src/modules/follow/models/follow.model";
 import { NotificationSettingsModel } from "@/src/modules/notification/models/notification-settings.model";
 import { NotificationModel } from "@/src/modules/notification/models/notification.model";
+import { PlanModel } from "@/src/modules/sponsorship/plan/models/plan.model";
+import { SubscriptionModel } from "@/src/modules/sponsorship/subscription/models/subscription.model";
 
 @ObjectType()
 export class UserModel implements User {
@@ -68,6 +70,12 @@ export class UserModel implements User {
 
     @Field(() => [FollowModel], { nullable: true })
     followers?: FollowModel[] | null;
+
+    @Field(() => [PlanModel], { nullable: true })
+    sponsorshipPlans?: PlanModel[] | null;
+
+    @Field(() => [SubscriptionModel], { nullable: true })
+    sponsorshipSubscriptions?: SubscriptionModel[] | null;
 
     @Field(() => String, { nullable: true })
     telegramId: string | null;

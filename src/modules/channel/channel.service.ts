@@ -41,6 +41,8 @@ export class ChannelService {
                     },
                 },
                 followings: true,
+                sponsorshipPlans: true,
+                sponsorshipSubscriptions: true,
             },
         });
 
