@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Category } from "@prisma/generated";
+import { StreamModel } from "../../stream/models/stream.model";
 
 @ObjectType()
 export class CategoryModel implements Category {
@@ -23,4 +24,7 @@ export class CategoryModel implements Category {
 
     @Field(() => Date)
     updatedAt: Date;
+
+    @Field(() => [StreamModel], { nullable: true })
+    streams?: StreamModel[];
 }

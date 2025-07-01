@@ -200,6 +200,7 @@ export class StreamService {
             OR: [
                 { title: { contains: searchTerm, mode: 'insensitive' } },
                 { user: { username: { contains: searchTerm, mode: 'insensitive' } } },
+                { category: { title: { contains: searchTerm, mode: 'insensitive' } } },
             ],
         };
     }
