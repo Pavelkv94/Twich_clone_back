@@ -48,13 +48,13 @@ async function seed() {
                 if (!userExists) {
                     const createdUser = await tx.user.create({
                         data: {
-                            username: username.toLowerCase(),
+                            username: username,
                             email: `${username.toLowerCase()}@example.com`,
                             password: await bcrypt.hash(username, 10),
                             displayName: username,
-                            avatar: `/channel/${username}.webp`,
+                            avatar: `channels/${username}.webp`,
                             bio: `I am ${username} and I love ${randomTitles[Math.floor(Math.random() * randomTitles.length)]}`,
-                            isVerified: true,
+                            isVerified: Math.random() > 0.5,
                             isEmailVerified: true,
                             socialLinks: {
                                 createMany: {
@@ -89,7 +89,7 @@ async function seed() {
                     await tx.stream.create({
                         data: {
                             title: randomTitle,
-                            thumbnailUrl: `/stream/${createdUser.username}-${randomTitle}.webp`,
+                            thumbnailUrl: `streams/${createdUser.username}-${randomCategory.slug}.webp`,
                             user: {
                                 connect: {
                                     id: createdUser.id,

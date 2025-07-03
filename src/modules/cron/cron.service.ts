@@ -1,10 +1,10 @@
 import { EmailService, MailPurpose } from '@/src/core/modules/notifications/email.service';
 import { PrismaService } from '@/src/core/modules/prisma/prisma.service';
-import { StorageService } from '@/src/core/modules/storage/storage.service';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { TelegramService } from '../telegram/telegram.service';
 import { NotificationService } from '../notification/notification.service';
+import { StorageService } from '@/src/core/modules/storage/storage.service';
 
 @Injectable()
 export class CronService {

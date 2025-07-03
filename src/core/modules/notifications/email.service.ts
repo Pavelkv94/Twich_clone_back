@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import path from 'path';
 import fs from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 export enum MailPurpose {
     ACTIVATION = 'activationAcc',
@@ -14,7 +15,7 @@ export enum MailPurpose {
 
 @Injectable()
 export class EmailService {
-    constructor(private mailerService: MailerService) { }
+    constructor(private mailerService: MailerService, private configService: ConfigService) { }
 
     async sendEmail(email: string, code: string, purpose: MailPurpose): Promise<void> {
         const template = {
@@ -47,9 +48,11 @@ export class EmailService {
                 template.subject = 'Enable Two-Factor Authentication!';
         }
 
+        const clientUrl = this.configService.get('ALLOWED_ORIGIN');
 
         let htmlTemplate = await this.loadTemplate(template.name);
-        htmlTemplate = htmlTemplate.replace('$code', code);
+        htmlTemplate = htmlTemplate.replace('$token', code);
+        htmlTemplate = htmlTemplate.replace('$clientUrl', clientUrl);
 
         await this.mailerService.sendMail({
             to: email,

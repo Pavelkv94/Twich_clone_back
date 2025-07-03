@@ -7,17 +7,19 @@ import { GqlAuthGuard } from '@/src/shared/guards/gql-auth.guard';
 import { ChangeProfileInput } from './inputs/change-profile.input';
 import { SocialLinkInput, SocialLinkOrderInput } from './inputs/social-link.input';
 import { SocialLinkModel } from './models/social-link.model';
+import { FileValidationPipe } from '@/src/shared/pipes/file-validation.pipe';
+import Upload from 'graphql-upload/Upload.mjs';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
 
 @Resolver('Profile')
 @UseGuards(GqlAuthGuard)
 export class ProfileResolver {
   constructor(private readonly profileService: ProfileService) { }
 
-  // TODO: Add avatar upload using REST API
-  // @Mutation(() => Boolean)
-  // async changeAvatar(@Args('file', { type: () => GraphQLUpload }, FileValidationPipe) file: Upload, @ExtractUserFromRequest() user: User) {
-  //   return this.profileService.changeAvatar(user, file);
-  // }
+  @Mutation(() => Boolean)
+  async changeAvatar(@Args('file', { type: () => GraphQLUpload }, FileValidationPipe) file: Upload, @ExtractUserFromRequest() user: User) {
+    return this.profileService.changeAvatar(user, file);
+  }
 
   @Mutation(() => Boolean, { name: 'changeProfile' })
   async changeProfile(@Args('input') input: ChangeProfileInput, @ExtractUserFromRequest() user: User) {
@@ -28,7 +30,6 @@ export class ProfileResolver {
   async socialLinks(@ExtractUserFromRequest() user: User): Promise<SocialLinkModel[]> {
     return this.profileService.findSocialLinks(user);
   }
-
 
   @Mutation(() => Boolean, { name: 'createSocialLink' })
   async createSocialLink(@Args('input') input: SocialLinkInput, @ExtractUserFromRequest() user: User) {
@@ -48,5 +49,10 @@ export class ProfileResolver {
   @Mutation(() => Boolean, { name: 'deleteSocialLink' })
   async deleteSocialLink(@Args('id') id: string) {
     return this.profileService.deleteSocialLink(id);
+  }
+
+  @Mutation(() => Boolean, { name: 'removeAvatar' })
+  async removeAvatar(@ExtractUserFromRequest() user: User) {
+    return this.profileService.removeAvatar(user);
   }
 }

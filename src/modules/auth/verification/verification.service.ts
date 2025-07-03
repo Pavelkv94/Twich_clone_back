@@ -37,7 +37,7 @@ export class VerificationService {
         })
 
         await this.sessionService.saveSession(session, metadata, user.id);
-        return true;
+        return user;
     }
 
     async sendVerificationEmail(email: string, userId: string) {

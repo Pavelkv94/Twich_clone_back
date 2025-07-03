@@ -125,6 +125,7 @@ type MakePaymentModel {
 }
 
 type Mutation {
+  changeAvatar(file: Upload!): Boolean!
   changeEmail(input: ChangeEmailInput!): Boolean!
   changeNotificationSettings(input: NotificationSettingsInput!): ChangeNotificationSettingsResponse!
   changePass(input: ChangePassInput!): Boolean!
@@ -144,6 +145,7 @@ type Mutation {
   login(input: LoginInput!): UserModel!
   logout: String!
   makePayment(planId: String!): MakePaymentModel!
+  removeAvatar: Boolean!
   removePlan(planId: String!): Boolean!
   removeSessionById(id: String!): String!
   removeStreamThumbnail: Boolean!
@@ -346,6 +348,9 @@ enum TransactionStatus {
   PENDING
   SUCCESS
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type UserModel {
   avatar: String

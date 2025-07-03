@@ -7,4 +7,4 @@ import { StorageConfig } from './storage.confg';
     providers: [StorageService, StorageConfig],
     exports: [StorageService],
 })
-export class StorageModule {}
+export class StorageModule { }
