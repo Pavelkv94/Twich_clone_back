@@ -62,7 +62,7 @@ export class CoreEnvConfig {
     allowedOrigin: string;
 
     @IsNotEmpty({
-        message: 'Set Env variable APPLICATION_PORT, example: 3000',
+        message: 'Set Env variable PORT, example: 3000',
     })
     applicationPort: number;
 
@@ -76,7 +76,7 @@ export class CoreEnvConfig {
         this.sessionSecure = configValidationUtility.convertToBoolean(this.configService.get<string>('SESSION_SECURE')) as boolean;
         this.sessionPrefix = this.configService.get<string>('SESSION_PREFIX');
         this.allowedOrigin = this.configService.get<string>('ALLOWED_ORIGIN');
-        this.applicationPort = this.configService.get<number>('APPLICATION_PORT');
+        this.applicationPort = this.configService.get<number>('PORT');
 
         configValidationUtility.validateConfig(this);
     }
