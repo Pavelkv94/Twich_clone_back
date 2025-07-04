@@ -31,7 +31,7 @@ import { StripeConfig } from './modules/stripe/stripe.config';
       useFactory: (stripeConfig: StripeConfig) => ({
         apiKey: stripeConfig.stripeApiKey,
         config: {
-          apiVersion: '2025-05-28.basil',
+          apiVersion: '2025-06-30.basil',
         },
       }),
       inject: [StripeConfig],
