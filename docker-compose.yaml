@@ -6,7 +6,7 @@ services:
     container_name: epic_stream_server
     restart: unless-stopped
     ports:
-      - "5005:3000"
+      - "5005:5000"
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
