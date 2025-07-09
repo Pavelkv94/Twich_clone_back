@@ -6,10 +6,10 @@ import { User } from '@/prisma/generated';
 import { ExtractUserFromRequest } from '@/src/shared/decorators/params/extract-user-from-req.decorator';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '@/src/shared/guards/gql-auth.guard';
-import { ThrottlerGuard } from '@nestjs/throttler';
+import { GqlThrottlerGuard } from '@/src/shared/guards/throttler.guard';
 
 @Resolver('Totp')
-  @UseGuards(GqlAuthGuard, ThrottlerGuard)
+@UseGuards(GqlAuthGuard, GqlThrottlerGuard)
 export class TotpResolver {
   constructor(private readonly totpService: TotpService) { }
 

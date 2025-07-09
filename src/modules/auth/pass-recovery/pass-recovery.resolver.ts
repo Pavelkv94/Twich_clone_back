@@ -6,10 +6,10 @@ import { ExtractUserAgent } from '@/src/shared/decorators/params/extract-user-ag
 import { getSessionMetadata } from '@/src/shared/utils/session-metadata.util';
 import { NewPasswordInput } from './inputs/new-password.input';
 import { UseGuards } from '@nestjs/common';
-import { ThrottlerGuard } from '@nestjs/throttler';
+import { GqlThrottlerGuard } from '@/src/shared/guards/throttler.guard';
 
 @Resolver('PassRecovery')
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(GqlThrottlerGuard)
 export class PassRecoveryResolver {
   constructor(private readonly passRecoveryService: PassRecoveryService) { }
 
