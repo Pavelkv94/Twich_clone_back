@@ -8,8 +8,10 @@ import { UseGuards } from '@nestjs/common';
 import { ChangePassInput } from './inputs/change-pass.input';
 import { ChangeEmailInput } from './inputs/change-email.input';
 import { User } from '@/prisma/generated/client';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Resolver('Account')
+  @UseGuards(ThrottlerGuard)
 export class AccountResolver {
   constructor(private readonly accountService: AccountService) { }
 

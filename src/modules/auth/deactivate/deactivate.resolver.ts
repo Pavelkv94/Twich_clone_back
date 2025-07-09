@@ -5,9 +5,10 @@ import { User } from '@/prisma/generated';
 import { ExtractUserFromRequest } from '@/src/shared/decorators/params/extract-user-from-req.decorator';
 import { GqlAuthGuard } from '@/src/shared/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Resolver('Deactivate')
-@UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, ThrottlerGuard)
 export class DeactivateResolver {
   constructor(private readonly deactivateService: DeactivateService) { }
 

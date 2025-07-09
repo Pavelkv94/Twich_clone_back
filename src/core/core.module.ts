@@ -10,6 +10,7 @@ import { LivekitModule } from './modules/livekit/livekit.module';
 import { LivekitConfig } from './modules/livekit/livekit.config';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { StripeConfig } from './modules/stripe/stripe.config';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -36,6 +37,12 @@ import { StripeConfig } from './modules/stripe/stripe.config';
       }),
       inject: [StripeConfig],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 5,
+      },
+    ]),
   ],
   controllers: [],
   providers: [CoreEnvConfig],

@@ -5,8 +5,11 @@ import { GqlContext } from '@/src/shared/types/gql-context.types';
 import { ExtractUserAgent } from '@/src/shared/decorators/params/extract-user-agent.decorator';
 import { getSessionMetadata } from '@/src/shared/utils/session-metadata.util';
 import { NewPasswordInput } from './inputs/new-password.input';
+import { UseGuards } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Resolver('PassRecovery')
+  @UseGuards(ThrottlerGuard)
 export class PassRecoveryResolver {
   constructor(private readonly passRecoveryService: PassRecoveryService) { }
 

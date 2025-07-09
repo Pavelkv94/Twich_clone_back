@@ -6,12 +6,12 @@ import { User } from '@/prisma/generated';
 import { ExtractUserFromRequest } from '@/src/shared/decorators/params/extract-user-from-req.decorator';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '@/src/shared/guards/gql-auth.guard';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Resolver('Totp')
-@UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, ThrottlerGuard)
 export class TotpResolver {
   constructor(private readonly totpService: TotpService) { }
-
 
   @Query(() => TotpModel, { name: 'generateTotpSecret' })
   async generateTotpSecret(@ExtractUserFromRequest() user: User): Promise<TotpModel> {
