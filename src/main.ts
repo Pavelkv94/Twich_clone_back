@@ -34,7 +34,7 @@ async function bootstrap() {
       maxAge: config.sessionMaxAge,
       httpOnly: config.sessionHttpOnly,
       secure: config.sessionSecure,
-      sameSite: "none", // TODO: change to "lax" in production
+      sameSite: "lax"
     },
     store: new RedisStore({
       client: redis,
