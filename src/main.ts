@@ -6,11 +6,12 @@ import { RedisService } from './core/modules/redis/redis.service';
 import { RedisStore } from 'connect-redis';
 import { CoreEnvConfig } from './core/core-env.config';
 import { initAppModule } from './init-app';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
 
   const dynamicAppModule = await initAppModule();
-  const app = await NestFactory.create(dynamicAppModule, { rawBody: true });
+  const app = await NestFactory.create<NestExpressApplication>(dynamicAppModule, { rawBody: true });
 
   const config = app.get<CoreEnvConfig>(CoreEnvConfig);
   const redis = app.get(RedisService);
@@ -20,6 +21,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
   }));
+
+  app.set('trust proxy', 1);
 
   app.use(session({
     secret: config.sessionSecret,
